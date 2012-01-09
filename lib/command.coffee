@@ -12,38 +12,79 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+optimist = require 'optimist'
+
 #-------------------------------------------------------------------------------
 exports.run = ->
 
-    optimist.usage 'Usage: $0 [-cvV] command [file ...]'
+    argv = optimist
+        .usage('Usage: $0 [-cvV] command [file ...]')
+        .boolean( 'v')
+        .alias(   'v', 'verbose')
+        .describe('v', 'generate verbose diagnostics')
 
-    optimist.alias('v', 'verbose')
-    optimist.alias('c', 'chime')
-    optimist.boolean('v')
-    optimist.boolean('V')
-    optimist.boolean('?')
-    optimist.boolean('h')
+        .alias(   'c', 'chime')
+        .describe('c', 'generate a diagnostic every so many minutes')
 
-    opts = optimist.argv
+        .boolean( 'V')
+        .describe('V', 'print the version')
 
-    argv = opts._
+        .boolean( '?')
+        .describe('?', 'print help')
 
-    run argv, opts
+        .boolean( 'h')
+        .describe('h', 'print help')
 
-#-------------------------------------------------------------------------------
-run = (argv, opts) ->
-    if argv.length == 0
+        .argv
+
+    #----
+
+    if argv["?"] or argv.h
         optimist.showHelp()
-        sys.exit(1)
+        process.exit 1
 
-    cmd = argv[0]
+    #----
 
-    if argv.length == 1
+    if argv.V
+        console.log(getVersion())
+        process.exit 0
+
+    #----
+
+    args = argv._
+
+    if args.length == 0
+        optimist.showHelp()
+        process.exit 1
+
+    cmd = args[0]
+
+    if cmd == '?'
+        optimist.showHelp()
+        process.exit 1
+
+    if args.length == 1
         files = ["."]
     else
-        files = argv.slice 1
+        files = args.slice(1)
 
-    fileSet = new FileSet(files)
+    #----
 
-    fileSet.whenChangedRun(cmd)
+    run cmd, files, argv
 
+#-------------------------------------------------------------------------------
+run = (cmd, files, opts) ->
+
+    console.log "run '#{cmd}' when #{JSON.stringify(files)} changes using '#{JSON.stringify(opts)}'"
+
+#-------------------------------------------------------------------------------
+getVersion = () ->
+    fs   = require 'fs'
+    path = require 'path'
+
+    packageJsonName  = path.join(path.dirname(fs.realpathSync(__filename)), '../package.json')
+
+    json = fs.readFileSync(packageJsonName)
+    values = JSON.parse(json)
+
+    return values.version
