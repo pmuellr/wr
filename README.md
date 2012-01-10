@@ -99,3 +99,4 @@ HISTORY
 `wr` is a port of Patrick Mueller's [run-when-changed.py](https://gist.github.com/240922)
 script to node.
 
+* 2012-01-09: version 1.0.0
