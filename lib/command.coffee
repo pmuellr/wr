@@ -119,7 +119,9 @@ getVersion = () ->
 
 #---------------------------------------------------------------------------
 logError = (message) ->
-    message = "wr: #{message}"
+    date    = new Date()
+    time    = date.toLocaleTimeString()
+    message = "#{time} wr: #{message}"
     charm
         .push(true)
         .display('bright')
@@ -132,7 +134,9 @@ logError = (message) ->
 
 #---------------------------------------------------------------------------
 logSuccess = (message) ->
-    message = "wr: #{message}"
+    date    = new Date()
+    time    = date.toLocaleTimeString()
+    message = "#{time} wr: #{message}"
     charm
         .push(true)
         .display('bright')
@@ -145,7 +149,9 @@ logSuccess = (message) ->
 
 #---------------------------------------------------------------------------
 logInfo = (message) ->
-    message = "wr: #{message}"
+    date    = new Date()
+    time    = date.toLocaleTimeString()
+    message = "#{time} wr: #{message}"
     charm
         .push(true)
         .display('bright')
