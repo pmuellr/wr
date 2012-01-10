@@ -39,7 +39,8 @@ The following options are available:
 `-c minutes --chime=minutes`
 
 > Write a diagnostic message after `minutes` have elapsed since last running
-> a command, to remind you `wr` is running.
+> a command, to remind you `wr` is running.  The default is 5 minutes.
+> Use the value 0 to disable the chime.
 
 `-v --verbose`
 

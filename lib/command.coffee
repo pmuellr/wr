@@ -44,6 +44,7 @@ exports.run = ->
 
         .alias(   'c', 'chime')
         .describe('c', 'generate a diagnostic every so many minutes')
+        .default( 'c', 5)
 
         .boolean( 'V')
         .describe('V', 'print the version')
