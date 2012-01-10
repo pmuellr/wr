@@ -27,12 +27,13 @@ charm = charm(process.stderr)
 #-------------------------------------------------------------------------------
 exports.run = ->
 
-    argv = process.argv
+    argv = process.argv.slice(2)
 
-    if argv.length == 2
-        stats = fs.statSync('.wr')
-        if stats.isFile()
-            argv = getDotWrContents(".wr")
+    if argv.length == 0
+        if path.existsSync('.wr')
+            stats = fs.statSync('.wr')
+            if stats.isFile()
+                argv = getDotWrContents(".wr")
 
     argv = optimist
         .usage('Usage: $0 [-cvV] command [file ...]')

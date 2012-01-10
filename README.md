@@ -100,3 +100,4 @@ HISTORY
 script to node.
 
 * 2012-01-09: version 1.0.0
+* 2012-01-10: version 1.0.1 - fixed some stupid bugs
