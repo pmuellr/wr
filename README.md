@@ -14,18 +14,18 @@
 # limitations under the License.
 -->
 
-`NAME`
-------
+NAME
+----
 
 `wr` -- watch files and run a command when they change
 
-`SYNOPSIS`
-----------
+SYNOPSIS
+--------
 
     wr [-cvV] command [file ...]
 
-`DESCRIPTION`
--------------
+DESCRIPTION
+-----------
 
 `wr` will watch the set of files and directories specified on the
 command line, and run the specified command when any of the files
@@ -53,8 +53,8 @@ The following options are available:
 
 > Display help.
 
-`EXAMPLES`
-----------
+EXAMPLES
+--------
 
 The following is how to run make when any file in the current directory
 changes:
@@ -73,30 +73,28 @@ current directory changes:
 
         wr "echo a file changed"
 
-`DIAGNOSTICS`
--------------
+DIAGNOSTICS
+-----------
 
 wr will not normally exit.   Use ctrl-c or equivalent to kill the process
 from the command-line.
 
-`ENVIRONMENT`
--------------
+ENVIRONMENT
+-----------
 
 If the current directory has a `.wr` file in it, that file is assumed
-to have the contents of a `wr` invocation in it.  The `wr` invocation
-should not include the `wr` command string at the beginning.  The file
-may contain blank lines or lines starting with the `#` character,
-which are considered comments, but should only have one non-blank,
-non-comment line.
+to have the contents of a `wr` invocation in it, one argument per line.
+The file may contain blank lines or lines starting with the `#` character,
+which are considered comments.
 
 The stdout and stderr from the command being run are passed directory to
 `wr`'s stdout and stderr.  stdin for the command will not be available
 for the command.
 
-Diagnostic information from `wr` will be written to stdout.
+Diagnostic information from `wr` will be written to stderr.
 
-`HISTORY`
----------
+HISTORY
+-------
 
 `wr` is a port of Patrick Mueller's [run-when-changed.py](https://gist.github.com/240922)
 script to node.

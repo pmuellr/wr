@@ -1,3 +1,4 @@
+#-------------------------------------------------------------------------------
 # Copyright (c) 2012 Patrick Mueller
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,6 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#-------------------------------------------------------------------------------
+
+.PHONY: test
 
 COFFEE = node_modules/.bin/coffee
 
@@ -22,12 +26,17 @@ watch:
 	wr "make test" bin lib test
 
 #-------------------------------------------------------------------------------
+install:
+	sudo npm -g install
+
+#-------------------------------------------------------------------------------
 test:
-	echo TBD
+	@echo test is TBD
 
 #-------------------------------------------------------------------------------
 vendor: \
 	npm_coffee \
+	npm_charm \
 	npm_optimist
 
 #-------------------------------------------------------------------------------
@@ -39,9 +48,14 @@ npm_optimist:
 	npm install optimist@0.3.0
 
 #-------------------------------------------------------------------------------
+npm_charm:
+	npm install charm@0.0.5
+
+#-------------------------------------------------------------------------------
 help:
 	@echo "available targets:"
 	@echo "   watch   - run tests when a source file changes"
+	@echo "   install - install as global npm package"
 	@echo "   test    - run tests"
 	@echo "   vendor  - get vendor files"
 	@echo "   help    - print this help"
