@@ -83,6 +83,15 @@ exports.run = ->
     { verbose, chime } = argv
     opts = {verbose, chime, logError, logSuccess, logInfo}
 
+    ###
+    console.log """
+        verbose: #{verbose}
+        chime:   #{chime}
+        cmd:     #{cmd}
+        files:   #{JSON.stringify(files)}
+    """
+    ###
+
     wr.run cmd, files, opts
 
 #-------------------------------------------------------------------------------
@@ -103,6 +112,14 @@ getDotWrContents = () ->
         line = line.replace(/#.*/,'')
         line = line.replace(/(^\s+)|(\s+$)/g,'')
         continue if line == ''
+
+        if line[0] == '-'
+            pattern = /(\S*)(\s*(.*))/
+            groups = line.match(pattern)
+            if groups[3] != ''
+                args.push groups[1]
+                args.push groups[3]
+                continue
 
         args.push line
 
