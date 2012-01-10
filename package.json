@@ -3,6 +3,7 @@
   "description":       "watch files and run a command when they change",
   "author":            "Patrick Mueller",
   "version":           "1.0.0",
+  "keywords":          [ "command", "watch" ],
   "licenses":
     [
       {
@@ -29,7 +30,8 @@
     {
       "wr":            "./bin/wr"
     },
-  "homepage":          "http://example.org",
+  "homepage":          "https://github.com/pmuellr/wr",
+  "bugs":              "https://github.com/pmuellr/wr/issues",
   "repository":
     {
       "type":          "git",
