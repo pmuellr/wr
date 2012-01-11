@@ -37,7 +37,7 @@ exports.run = ->
 
     optimist = optimist(args)
     argv = optimist
-        .usage('Usage: $0 [-cvV] command [file ...]')
+        .usage('Usage: $0 [options] command [file ...]')
 
         .alias(   'v', 'verbose')
         .boolean( 'verbose')
@@ -56,6 +56,9 @@ exports.run = ->
         .string(  'stderrcolor')
         .describe('stderrcolor', 'display stderr in the specified color')
 
+        .alias(   'p', 'poll')
+        .describe('poll', 'use poll-based file watching')
+
         .boolean( 'V')
         .describe('V', 'print the version')
 
@@ -68,6 +71,16 @@ exports.run = ->
         .argv
 
     #----
+
+    if argv.chime
+        if typeof argv.chime != 'number'
+            console.error "the chime option value is not a number"
+            process.exit 1
+
+    if argv.poll
+        if typeof argv.poll != 'number'
+            console.error "the poll option value is not a number"
+            process.exit 1
 
     printHelp() if argv["?"] or argv.h
 
@@ -97,6 +110,7 @@ exports.run = ->
     opts.stdoutcolor = argv.stdoutcolor
     opts.stderrcolor = argv.stderrcolor
     opts.exec        = argv.exec
+    opts.poll        = argv.poll
 
     opts.logError    = logError
     opts.logSuccess  = logSuccess

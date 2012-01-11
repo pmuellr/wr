@@ -36,7 +36,7 @@ If no files are specified, it's as if you passed "." as the file parameter.
 
 The following options are available:
 
-`-c minutes --chime=minutes`
+`-c --chime minutes`
 
 > Write a diagnostic message after `minutes` have elapsed since last running
 > a command, to remind you `wr` is running.  The default is 5 minutes.
@@ -57,11 +57,21 @@ The following options are available:
 
 > Use exec instead of spawn to run the command.
 
+`-p --poll seconds`
+
+> Use a polling file watcher.  The default is to use a non-polling file watcher.
+> The non-polling file watcher
+> may have a relatively small maximum number of files it can watch (200),
+> but the polling file watcher has no maximum.
+> The polling file
+> watcher may incur delays between a file changing and the command running,
+> compared to the non-polling file watcher.
+
 `-V`
 
 > Display the version number and exit.
 
-`-?, -h`
+`-? -h`
 
 > Display help.
 
@@ -91,11 +101,15 @@ DIAGNOSTICS
 wr will not normally exit.   Use ctrl-c or equivalent to kill the process
 from the command-line.
 
+Diagnostic information from `wr` will be written to stderr.
+
 ENVIRONMENT
 -----------
 
 If the current directory has a `.wr` file in it, that file is assumed
-to have the contents of a `wr` invocation in it, one argument per line.
+to have the contents of a `wr` invocation in it.  Options, option/value
+pairs, the command to run, and each file to be watched should be
+specified on separate lines.
 The file may contain blank lines or lines starting with the `#` character,
 which are considered comments.
 
@@ -103,20 +117,20 @@ The stdout and stderr from the command being run are passed directory to
 `wr`'s stdout and stderr.  stdin for the command will not be available
 for the command.
 
-Diagnostic information from `wr` will be written to stderr.
-
 The command will be run in either spawn or exec mode, as determined by
 command-line options.  Here are the differences:
 
 exec:
 
 * the command will not be parsed, as will be run as given
+* should handle i/o redirection shell operators
 * stdout and stderr output will be buffered until the command is complete
 
 spawn:
 
 * the command will be parsed into space separated tokens, probably
 misinterpreting any quotes you have in your command
+* will not handle i/o redirection shell operators
 * stdout and stderr output will not be buffered
 
 HISTORY

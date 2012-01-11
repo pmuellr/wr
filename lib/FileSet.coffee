@@ -20,6 +20,7 @@ path         = require 'path'
 charm        = require 'charm'
 
 Executor     = require './Executor'
+FileWatcher  = require './FileWatcher'
 
 #-------------------------------------------------------------------------------
 module.exports = class FileSet
@@ -27,7 +28,6 @@ module.exports = class FileSet
     #---------------------------------------------------------------------------
     constructor: (@files, @opts) ->
         @allFiles     = []
-        @watchers     = []
         @chimeTimeout = null
 
         @opts.logError   = (->) if !@opts.logError
@@ -48,7 +48,7 @@ module.exports = class FileSet
 
     #---------------------------------------------------------------------------
     fileChanged: () ->
-        @clearWatchers()
+        @fileWatcher = null
         @runCommand()
 
     #---------------------------------------------------------------------------
@@ -113,22 +113,8 @@ module.exports = class FileSet
 
     #---------------------------------------------------------------------------
     watchFiles:  ->
-        fileChanged = => @fileChanged()
-        for file in @allFiles
-            try
-                watcher = fs.watch(file, {persist: true}, fileChanged)
-            catch e
-                @logError "exception watching '#{file}': #{e}"
-                continue
-
-            @watchers.push(watcher)
-
-    #---------------------------------------------------------------------------
-    clearWatchers: () ->
-        for watcher in @watchers
-            watcher.close()
-
-        @watchers = []
+        @fileWatcher = FileWatcher.get(@, @opts)
+        @fileWatcher.watch(@allFiles)
 
     #---------------------------------------------------------------------------
     logSuccess: (message) ->
