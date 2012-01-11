@@ -46,6 +46,12 @@ The following options are available:
 
 > Generate additional diagnostic information.
 
+`--stdoutcolor color`
+`--stderrcolor color`
+
+> Display stdout and stderr in specific colors; color values:
+> `black red green yellow blue magenta cyan white`.
+
 `-V`
 
 > Display the version number and exit.

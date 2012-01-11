@@ -8,6 +8,8 @@
 
 --verbose
 --chime 1
+--stdoutcolor blue
+--stderrcolor magenta
 
 #-----------------------------------------------------
 # command to run

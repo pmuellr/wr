@@ -49,6 +49,12 @@ exports.run = ->
         .boolean( 'V')
         .describe('V', 'print the version')
 
+        .string(  'stdoutcolor')
+        .describe('stdoutcolor', 'display stdout in the specified color')
+
+        .string(  'stderrcolor')
+        .describe('stderrcolor', 'display stderr in the specified color')
+
         .boolean( '?')
         .describe('?', 'print help')
 
@@ -80,15 +86,16 @@ exports.run = ->
 
     #----
 
-    { verbose, chime } = argv
-    opts = {verbose, chime, logError, logSuccess, logInfo}
+    { verbose, chime, stdoutcolor, stderrcolor  } = argv
+
+    opts = {verbose, chime, stdoutcolor, stderrcolor, logError, logSuccess, logInfo}
 
     ###
     console.log """
-        verbose: #{verbose}
-        chime:   #{chime}
-        cmd:     #{cmd}
-        files:   #{JSON.stringify(files)}
+        cmd:         #{cmd}
+        files:       #{JSON.stringify(files)}
+        opts:        #{JSON.stringify(opts)}
+        argv: #{JSON.stringify(argv,null,4)}
     """
     ###
 

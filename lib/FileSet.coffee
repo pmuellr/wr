@@ -18,6 +18,8 @@ fs           = require 'fs'
 path         = require 'path'
 childProcess = require 'child_process'
 
+charm        = require 'charm'
+
 #-------------------------------------------------------------------------------
 module.exports = class FileSet
 
@@ -67,8 +69,24 @@ module.exports = class FileSet
         @opts.logInfo "running '#{@cmd}'"
 
         cb = (error, stdout, stderr) =>
-            process.stdout.write(stdout)
-            process.stdout.write(stderr)
+            if not @opts.stdoutcolor
+                process.stdout.write(stdout)
+            else
+                charm(process.stdout)
+                    .push(true)
+                    .foreground(@opts.stdoutcolor)
+                    .write(stdout)
+                    .pop(true)
+
+
+            if not @opts.stderrcolor
+                process.stderr.write(stderr)
+            else
+                charm(process.stderr)
+                    .push(true)
+                    .foreground(@opts.stderrcolor)
+                    .write(stderr)
+                    .pop(true)
 
             if error
                 @logError   "command failed with rc:#{error.code}"
