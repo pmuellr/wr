@@ -16,25 +16,28 @@
 
 fs           = require 'fs'
 path         = require 'path'
-childProcess = require 'child_process'
 
 charm        = require 'charm'
+
+Executor     = require './Executor'
 
 #-------------------------------------------------------------------------------
 module.exports = class FileSet
 
     #---------------------------------------------------------------------------
-    constructor: (@files) ->
+    constructor: (@files, @opts) ->
         @allFiles     = []
         @watchers     = []
         @chimeTimeout = null
 
-    #---------------------------------------------------------------------------
-    whenChangedRun: (@cmd, @opts) ->
         @opts.logError   = (->) if !@opts.logError
         @opts.logSuccess = (->) if !@opts.logSuccess
         @opts.logInfo    = (->) if !@opts.logInfo
 
+        @executor = Executor.getExecutor(@, @opts)
+
+    #---------------------------------------------------------------------------
+    whenChangedRun: (@cmd) ->
         @expandFiles()
         if @allFiles.length == 0
             @logError "no files found to watch"
@@ -65,44 +68,21 @@ module.exports = class FileSet
         )
 
     #---------------------------------------------------------------------------
+    resetAfterCommand:  ->
+        @expandFiles()
+
+        if @allFiles.length == 0
+            @logError("no files found to watch")
+            return
+
+        @watchFiles()
+        @resetChime()
+
+    #---------------------------------------------------------------------------
     runCommand:  ->
         @opts.logInfo "running '#{@cmd}'"
 
-        cb = (error, stdout, stderr) =>
-            if not @opts.stdoutcolor
-                process.stdout.write(stdout)
-            else
-                charm(process.stdout)
-                    .push(true)
-                    .foreground(@opts.stdoutcolor)
-                    .write(stdout)
-                    .pop(true)
-
-
-            if not @opts.stderrcolor
-                process.stderr.write(stderr)
-            else
-                charm(process.stderr)
-                    .push(true)
-                    .foreground(@opts.stderrcolor)
-                    .write(stderr)
-                    .pop(true)
-
-            if error
-                @logError   "command failed with rc:#{error.code}"
-            else
-                @logSuccess "command succeeded"
-
-            @expandFiles()
-
-            if @allFiles.length == 0
-                @opts.logError("no files found to watch")
-                return
-
-            @watchFiles()
-            @resetChime()
-
-        childProcess.exec(@cmd, cb)
+        @executor.run(@cmd)
 
     #---------------------------------------------------------------------------
     expandFiles: ->
@@ -114,7 +94,7 @@ module.exports = class FileSet
     #---------------------------------------------------------------------------
     expandFile: (fileName) ->
         if !path.existsSync(fileName)
-            @opts.logError("File not found '#{fileName}'")
+            @logError("File not found '#{fileName}'")
             return
 
         stats = fs.statSync(fileName)
@@ -135,7 +115,12 @@ module.exports = class FileSet
     watchFiles:  ->
         fileChanged = => @fileChanged()
         for file in @allFiles
-            watcher = fs.watch(file, {persist: true}, fileChanged)
+            try
+                watcher = fs.watch(file, {persist: true}, fileChanged)
+            catch e
+                @logError "exception watching '#{file}': #{e}"
+                continue
+
             @watchers.push(watcher)
 
     #---------------------------------------------------------------------------

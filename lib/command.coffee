@@ -27,27 +27,28 @@ charm = charm(process.stderr)
 #-------------------------------------------------------------------------------
 exports.run = ->
 
-    argv = process.argv.slice(2)
+    args = process.argv.slice(2)
 
-    if argv.length == 0
+    if args.length == 0
         if path.existsSync('.wr')
             stats = fs.statSync('.wr')
             if stats.isFile()
-                argv = getDotWrContents(".wr")
+                args = getDotWrContents(".wr")
 
+    optimist = optimist(args)
     argv = optimist
         .usage('Usage: $0 [-cvV] command [file ...]')
-        .boolean( 'v')
-        .boolean( 'verbose')
+
         .alias(   'v', 'verbose')
-        .describe('v', 'generate verbose diagnostics')
+        .boolean( 'verbose')
+        .describe('verbose', 'generate verbose diagnostics')
 
         .alias(   'c', 'chime')
-        .describe('c', 'generate a diagnostic every so many minutes')
-        .default( 'c', 5)
+        .default( 'chime', 5)
+        .describe('chime', 'generate a diagnostic every so many minutes')
 
-        .boolean( 'V')
-        .describe('V', 'print the version')
+        .boolean( 'exec')
+        .describe('exec', 'run command with exec instead of spawn')
 
         .string(  'stdoutcolor')
         .describe('stdoutcolor', 'display stdout in the specified color')
@@ -55,13 +56,16 @@ exports.run = ->
         .string(  'stderrcolor')
         .describe('stderrcolor', 'display stderr in the specified color')
 
+        .boolean( 'V')
+        .describe('V', 'print the version')
+
         .boolean( '?')
         .describe('?', 'print help')
 
         .boolean( 'h')
         .describe('h', 'print help')
 
-        .parse(argv)
+        .argv
 
     #----
 
@@ -86,9 +90,17 @@ exports.run = ->
 
     #----
 
-    { verbose, chime, stdoutcolor, stderrcolor  } = argv
+    opts = {}
 
-    opts = {verbose, chime, stdoutcolor, stderrcolor, logError, logSuccess, logInfo}
+    opts.verbose     = argv.verbose
+    opts.chime       = argv.chime
+    opts.stdoutcolor = argv.stdoutcolor
+    opts.stderrcolor = argv.stderrcolor
+    opts.exec        = argv.exec
+
+    opts.logError    = logError
+    opts.logSuccess  = logSuccess
+    opts.logInfo     = logInfo
 
     ###
     console.log """
@@ -102,7 +114,7 @@ exports.run = ->
     wr.run cmd, files, opts
 
 #-------------------------------------------------------------------------------
-printHelp = (argv) ->
+printHelp = () ->
     optimist.showHelp()
 
     console.error "for more info see: https://github.com/pmuellr/wr"

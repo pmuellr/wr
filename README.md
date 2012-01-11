@@ -47,10 +47,15 @@ The following options are available:
 > Generate additional diagnostic information.
 
 `--stdoutcolor color`
+
 `--stderrcolor color`
 
 > Display stdout and stderr in specific colors; color values:
 > `black red green yellow blue magenta cyan white`.
+
+`--exec`
+
+> Use exec instead of spawn to run the command.
 
 `-V`
 
@@ -99,6 +104,20 @@ The stdout and stderr from the command being run are passed directory to
 for the command.
 
 Diagnostic information from `wr` will be written to stderr.
+
+The command will be run in either spawn or exec mode, as determined by
+command-line options.  Here are the differences:
+
+exec:
+
+* the command will not be parsed, as will be run as given
+* stdout and stderr output will be buffered until the command is complete
+
+spawn:
+
+* the command will be parsed into space separated tokens, probably
+misinterpreting any quotes you have in your command
+* stdout and stderr output will not be buffered
 
 HISTORY
 -------

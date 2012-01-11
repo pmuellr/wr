@@ -19,7 +19,7 @@ FileSet = require './FileSet'
 #-------------------------------------------------------------------------------
 module.exports.run = (cmd, files, opts) ->
 
-    fileSet = new FileSet(files)
+    fileSet = new FileSet(files, opts)
 
-    fileSet.whenChangedRun(cmd, opts)
+    fileSet.whenChangedRun(cmd)
 
