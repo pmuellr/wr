@@ -139,5 +139,20 @@ HISTORY
 `wr` is a port of Patrick Mueller's [run-when-changed.py](https://gist.github.com/240922)
 script to node.
 
-* 2012-01-09: version 1.0.0
-* 2012-01-10: version 1.0.1 - fixed some stupid bugs
+**2012-01-11: version 1.1.0**
+
+* [issue 1](https://github.com/pmuellr/wr/issues/1) - chime should print the time
+* [issue 2](https://github.com/pmuellr/wr/issues/2) - chime should default to 5 minutes
+* [issue 3](https://github.com/pmuellr/wr/issues/3) - .wr file parser should accept option/value on a single line
+* [issue 5](https://github.com/pmuellr/wr/issues/5) - provide option to use stat-based polling
+* [issue 6](https://github.com/pmuellr/wr/issues/6) - use spawn instead of exec to run commands
+* [issue 7](https://github.com/pmuellr/wr/issues/7) - colorize stdout and stderr
+
+**2012-01-10: version 1.0.1**
+
+* fixed some stupid bugs
+
+**2012-01-09: version 1.0.0**
+
+* initial release
+
