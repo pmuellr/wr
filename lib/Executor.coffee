@@ -36,6 +36,16 @@ module.exports = class Executor
         @fileSet.resetAfterCommand()
 
     #---------------------------------------------------------------------------
+    timerStart: () ->
+        @startTime = (new Date()).valueOf()
+
+    #---------------------------------------------------------------------------
+    timerElapsed: () ->
+        ms = (new Date()).valueOf() - @startTime
+        ms = Math.round(ms / 100)
+        ms / 10
+
+    #---------------------------------------------------------------------------
     logSuccess: (message) ->
         @opts.logSuccess message
 
@@ -60,6 +70,8 @@ class ExecutorExec extends Executor
 
     #---------------------------------------------------------------------------
     run: (cmd) ->
+        @timerStart()
+
         callback = (error, stdout, stderr) => @done(error, stdout, stderr)
 
         childProcess.exec(cmd, callback)
@@ -85,10 +97,12 @@ class ExecutorExec extends Executor
                 .write(stderr)
                 .pop(true)
 
+        secs = @timerElapsed()
+
         if error
-            @logError   "command failed with rc:#{error.code}"
+            @logError   "#{secs}s - command failed with rc:#{error.code}"
         else
-            @logSuccess "command succeeded"
+            @logSuccess "#{secs}s - command succeeded"
 
         @resetAfterCommand()
 
@@ -101,6 +115,8 @@ class ExecutorSpawn extends Executor
 
     #---------------------------------------------------------------------------
     run: (cmd) ->
+        @timerStart()
+
         [ cmd, args ] = @splitCmd(cmd)
 
         proc = childProcess.spawn(cmd, args)
@@ -137,14 +153,16 @@ class ExecutorSpawn extends Executor
 
     #---------------------------------------------------------------------------
     exit: (code, sig) ->
+        secs = @timerElapsed()
+
         if code == 0
-            @logSuccess "command succeeded"
+            @logSuccess "#{secs}s - command succeeded"
         else if code
-            @logError   "command failed with rc:#{code}"
+            @logError   "#{secs}s - command failed with rc:#{code}"
         else if sig
-            @logError   "command failed with signal:#{sig}"
+            @logError   "#{secs}s - command failed with signal:#{sig}"
         else
-            @logError   "command failed for some unknown reason"
+            @logError   "#{secs}s - command failed for some unknown reason"
 
         @resetAfterCommand()
 

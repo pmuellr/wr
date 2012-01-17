@@ -30,9 +30,15 @@ module.exports = class FileWatcher
     constructor: (@fileSet, @opts) ->
 
     #---------------------------------------------------------------------------
-    fileChanged: () ->
+    fileChanged: (fileName) ->
+        @fileSet.logInfo "file changed: #{fileName}" if fileName
         @stopWatching()
         @fileSet.fileChanged()
+
+    #---------------------------------------------------------------------------
+    getCB: (fileName) ->
+        watcher = @
+        -> watcher.fileChanged(fileName)
 
 #-------------------------------------------------------------------------------
 class FileWatcherNoPoll extends FileWatcher
@@ -43,12 +49,10 @@ class FileWatcherNoPoll extends FileWatcher
 
     #---------------------------------------------------------------------------
     watch: (files) ->
-        fileChanged = => @fileChanged()
-
         @watchers = []
         for file in files
             try
-                watcher = fs.watch(file, {persist: true}, fileChanged)
+                watcher = fs.watch(file, {persist: true}, @getCB(file))
                 @watchers.push(watcher)
             catch e
                 @fileSet.logError "exception watching '#{file}': #{e}"
@@ -69,15 +73,13 @@ class FileWatcherPoll extends FileWatcher
 
     #---------------------------------------------------------------------------
     watch: (@files) ->
-        fileChanged = => @fileChanged()
-
         options =
             interval:   1000 * @opts.poll
             persistent: true
 
         for file in @files
             try
-                fs.watchFile(file, options, fileChanged)
+                fs.watchFile(file, options,  @getCB(file))
             catch e
                 @fileSet.logError "exception watching '#{file}': #{e}"
 
