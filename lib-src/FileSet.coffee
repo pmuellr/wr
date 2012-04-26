@@ -28,6 +28,7 @@ module.exports = class FileSet
     #---------------------------------------------------------------------------
     constructor: (@files, @opts) ->
         @allFiles     = []
+        @allMtimes    = {}
         @chimeTimeout = null
 
         @opts.logError   = (->) if !@opts.logError
@@ -35,6 +36,10 @@ module.exports = class FileSet
         @opts.logInfo    = (->) if !@opts.logInfo
 
         @executor = Executor.getExecutor(@, @opts)
+
+    #---------------------------------------------------------------------------
+    getMtime: (fileName) ->
+        @allMtimes[fileName] || 0
 
     #---------------------------------------------------------------------------
     whenChangedRun: (@cmd) ->
@@ -86,7 +91,8 @@ module.exports = class FileSet
 
     #---------------------------------------------------------------------------
     expandFiles: ->
-        @allFiles = []
+        @allFiles  = []
+        @allMtimes = {}
 
         for file in @files
             @expandFile(file)
@@ -101,15 +107,16 @@ module.exports = class FileSet
 
         if stats.isFile()
             @allFiles.push(fileName)
+            @allMtimes[fileName] = stats.mtime.getTime()
 
         else if stats.isDirectory()
             @allFiles.push(fileName)
+            @allMtimes[fileName] = stats.mtime.getTime()
 
             entries = fs.readdirSync(fileName)
 
             for entry in entries
                 @expandFile path.join(fileName, entry)
-
 
     #---------------------------------------------------------------------------
     watchFiles:  ->

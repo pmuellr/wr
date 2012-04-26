@@ -19,19 +19,19 @@
 COFFEE = node_modules/.bin/coffee
 
 #-------------------------------------------------------------------------------
-all: help
+all: build
 
 #-------------------------------------------------------------------------------
 watch:
-	wr "make test" bin lib test
+	wr "make build" bin lib test
 
 #-------------------------------------------------------------------------------
 install:
 	sudo npm -g install
 
 #-------------------------------------------------------------------------------
-test:
-	@echo test is TBD
+build:
+	@node_modules/.bin/coffee --bare --compile --output lib lib-src/*.coffee
 
 #-------------------------------------------------------------------------------
 vendor: \
@@ -56,7 +56,7 @@ help:
 	@echo "available targets:"
 	@echo "   watch   - run tests when a source file changes"
 	@echo "   install - install as global npm package"
-	@echo "   test    - run tests"
+	@echo "   build   - build the program"
 	@echo "   vendor  - get vendor files"
 	@echo "   help    - print this help"
 	@echo ""

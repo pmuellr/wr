@@ -31,14 +31,21 @@ module.exports = class FileWatcher
 
     #---------------------------------------------------------------------------
     fileChanged: (fileName) ->
+        oldMtime = @fileSet.getMtime(fileName)
+    
+        stats = fs.statSync(fileName)
+        newMtime = stats?.mtime.getTime() || 0
+        
+        if oldMtime == newMtime
+            return
+     
         @fileSet.logInfo "file changed: #{fileName}" if fileName
         @stopWatching()
         @fileSet.fileChanged()
 
     #---------------------------------------------------------------------------
     getCB: (fileName) ->
-        watcher = @
-        -> watcher.fileChanged(fileName)
+        => @fileChanged(fileName)
 
 #-------------------------------------------------------------------------------
 class FileWatcherNoPoll extends FileWatcher
@@ -56,6 +63,9 @@ class FileWatcherNoPoll extends FileWatcher
                 @watchers.push(watcher)
             catch e
                 @fileSet.logError "exception watching '#{file}': #{e}"
+                if e.code == "EMFILE"
+                    @fileSet.logError "increase available file handles with `ulimit -n <number>`"
+                return
 
     #---------------------------------------------------------------------------
     stopWatching: () ->
@@ -82,6 +92,7 @@ class FileWatcherPoll extends FileWatcher
                 fs.watchFile(file, options,  @getCB(file))
             catch e
                 @fileSet.logError "exception watching '#{file}': #{e}"
+                return
 
     #---------------------------------------------------------------------------
     stopWatching: () ->
