@@ -14,7 +14,8 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-fs = require 'fs'
+fs   = require 'fs'
+path = require 'path'
 
 #-------------------------------------------------------------------------------
 module.exports = class FileWatcher
@@ -31,13 +32,14 @@ module.exports = class FileWatcher
 
     #---------------------------------------------------------------------------
     fileChanged: (fileName) ->
-        oldMtime = @fileSet.getMtime(fileName)
-    
-        stats = fs.statSync(fileName)
-        newMtime = stats?.mtime.getTime() || 0
+        if path.existsSync fileName
+            oldMtime = @fileSet.getMtime(fileName)
         
-        if oldMtime == newMtime
-            return
+            stats = fs.statSync(fileName)
+            newMtime = stats?.mtime.getTime() || 0
+            
+            if oldMtime == newMtime
+                return
      
         @fileSet.logInfo "file changed: #{fileName}" if fileName
         @stopWatching()
