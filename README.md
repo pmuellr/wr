@@ -139,6 +139,11 @@ HISTORY
 `wr` is a port of Patrick Mueller's [run-when-changed.py](https://gist.github.com/240922)
 script to node.
 
+**2012-05-03: version 1.2.0**
+
+* [issue 8](https://github.com/pmuellr/wr/issues/8) - add elapsed time to success and failure messages
+* fixed bug where wr fired off it's command when the access time changed on a file
+
 **2012-01-11: version 1.1.0**
 
 * [issue 1](https://github.com/pmuellr/wr/issues/1) - chime should print the time
