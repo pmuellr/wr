@@ -17,8 +17,6 @@
 fs           = require 'fs'
 path         = require 'path'
 
-charm        = require 'charm'
-
 Executor     = require './Executor'
 FileWatcher  = require './FileWatcher'
 

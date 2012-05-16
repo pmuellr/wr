@@ -17,6 +17,8 @@
 childProcess = require 'child_process'
 
 charm        = require 'charm'
+charmOut     = charm(process.stdout)
+charmErr     = charm(process.stderr)
 
 #-------------------------------------------------------------------------------
 module.exports = class Executor
@@ -81,7 +83,7 @@ class ExecutorExec extends Executor
         if not @opts.stdoutcolor
             process.stdout.write(stdout)
         else
-            charm(process.stdout)
+            charmOut
                 .push(true)
                 .foreground(@opts.stdoutcolor)
                 .write(stdout)
@@ -91,7 +93,7 @@ class ExecutorExec extends Executor
         if not @opts.stderrcolor
             process.stderr.write(stderr)
         else
-            charm(process.stderr)
+            charmErr
                 .push(true)
                 .foreground(@opts.stderrcolor)
                 .write(stderr)
@@ -133,7 +135,7 @@ class ExecutorSpawn extends Executor
             process.stdout.write(data)
             return
 
-        charm(process.stdout)
+        charmOut
             .push(true)
             .foreground(@opts.stdoutcolor)
             .write(data)
@@ -145,7 +147,7 @@ class ExecutorSpawn extends Executor
             process.stderr.write(data)
             return
 
-        charm(process.stderr)
+        charmErr
             .push(true)
             .foreground(@opts.stderrcolor)
             .write(data)
