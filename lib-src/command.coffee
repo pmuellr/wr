@@ -24,13 +24,15 @@ wr       = require './wr'
 
 charm = charm(process.stderr)
 
+existsSync = fs.existsSync || path.existsSync
+
 #-------------------------------------------------------------------------------
 exports.run = ->
 
     args = process.argv.slice(2)
 
     if args.length == 0
-        if path.existsSync('.wr')
+        if existsSync('.wr')
             stats = fs.statSync('.wr')
             if stats.isFile()
                 args = getDotWrContents(".wr")

@@ -17,6 +17,8 @@
 fs   = require 'fs'
 path = require 'path'
 
+existsSync = fs.existsSync || path.existsSync
+
 #-------------------------------------------------------------------------------
 module.exports = class FileWatcher
 
@@ -32,7 +34,7 @@ module.exports = class FileWatcher
 
     #---------------------------------------------------------------------------
     fileChanged: (fileName) ->
-        if path.existsSync fileName
+        if existsSync fileName
             oldMtime = @fileSet.getMtime(fileName)
         
             stats = fs.statSync(fileName)

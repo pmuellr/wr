@@ -20,6 +20,8 @@ path         = require 'path'
 Executor     = require './Executor'
 FileWatcher  = require './FileWatcher'
 
+existsSync = fs.existsSync || path.existsSync
+
 #-------------------------------------------------------------------------------
 module.exports = class FileSet
 
@@ -97,7 +99,7 @@ module.exports = class FileSet
 
     #---------------------------------------------------------------------------
     expandFile: (fileName) ->
-        if !path.existsSync(fileName)
+        if !existsSync(fileName)
             @logError("File not found '#{fileName}'")
             return
 
