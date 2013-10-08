@@ -16,10 +16,6 @@
 
 childProcess = require 'child_process'
 
-charm        = require 'charm'
-charmOut     = charm(process.stdout)
-charmErr     = charm(process.stderr)
-
 #-------------------------------------------------------------------------------
 module.exports = class Executor
 
@@ -76,28 +72,12 @@ class ExecutorExec extends Executor
 
         callback = (error, stdout, stderr) => @done(error, stdout, stderr)
 
-        childProcess.exec(cmd, callback)
+        return childProcess.exec(cmd, callback)
 
     #---------------------------------------------------------------------------
     done: (error, stdout, stderr) ->
-        if not @opts.stdoutcolor
-            process.stdout.write(stdout)
-        else
-            charmOut
-                .push(true)
-                .foreground(@opts.stdoutcolor)
-                .write(stdout)
-                .pop(true)
-
-
-        if not @opts.stderrcolor
-            process.stderr.write(stderr)
-        else
-            charmErr
-                .push(true)
-                .foreground(@opts.stderrcolor)
-                .write(stderr)
-                .pop(true)
+        process.stdout.write stdout
+        process.stderr.write stderr.red
 
         secs = @timerElapsed()
 
@@ -131,27 +111,11 @@ class ExecutorSpawn extends Executor
 
     #---------------------------------------------------------------------------
     stdout: (data) ->
-        if not @opts.stdoutcolor
-            process.stdout.write(data)
-            return
-
-        charmOut
-            .push(true)
-            .foreground(@opts.stdoutcolor)
-            .write(data)
-            .pop(true)
+        process.stdout.write stdout
 
     #---------------------------------------------------------------------------
     stderr: (data) ->
-        if not @opts.stderrcolor
-            process.stderr.write(data)
-            return
-
-        charmErr
-            .push(true)
-            .foreground(@opts.stderrcolor)
-            .write(data)
-            .pop(true)
+        process.stderr.write stderr.red
 
     #---------------------------------------------------------------------------
     exit: (code, sig) ->

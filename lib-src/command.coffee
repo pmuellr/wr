@@ -17,12 +17,9 @@
 fs       = require 'fs'
 path     = require 'path'
 
-charm    = require 'charm'
 optimist = require 'optimist'
 
 wr       = require './wr'
-
-charm = charm(process.stderr)
 
 existsSync = fs.existsSync || path.existsSync
 
@@ -51,12 +48,6 @@ exports.run = ->
 
         .boolean( 'exec')
         .describe('exec', 'run command with exec instead of spawn')
-
-        .string(  'stdoutcolor')
-        .describe('stdoutcolor', 'display stdout in the specified color')
-
-        .string(  'stderrcolor')
-        .describe('stderrcolor', 'display stderr in the specified color')
 
         .alias(   'p', 'poll')
         .describe('poll', 'use poll-based file watching')
@@ -109,8 +100,6 @@ exports.run = ->
 
     opts.verbose     = argv.verbose
     opts.chime       = argv.chime
-    opts.stdoutcolor = argv.stdoutcolor
-    opts.stderrcolor = argv.stderrcolor
     opts.exec        = argv.exec
     opts.poll        = argv.poll
 
@@ -174,43 +163,22 @@ getVersion = () ->
 logError = (message) ->
     date    = new Date()
     time    = date.toLocaleTimeString()
-    message = "#{time} wr: #{message}"
-    charm
-        .push(true)
-        .display('bright')
-        .background('red')
-        .foreground('white')
-        .write(message)
-        .pop(true)
-        .write('\n')
-        .down(1)
+    message = "#{time} wr: #{message}".red.inverse.white
+
+    console.log message
 
 #---------------------------------------------------------------------------
 logSuccess = (message) ->
     date    = new Date()
     time    = date.toLocaleTimeString()
-    message = "#{time} wr: #{message}"
-    charm
-        .push(true)
-        .display('bright')
-        .background('green')
-        .foreground('white')
-        .write(message)
-        .pop(true)
-        .write('\n')
-        .down(1)
+    message = "#{time} wr: #{message}".green.inverse.white
+
+    console.log message
 
 #---------------------------------------------------------------------------
 logInfo = (message) ->
     date    = new Date()
     time    = date.toLocaleTimeString()
-    message = "#{time} wr: #{message}"
-    charm
-        .push(true)
-        .display('bright')
-        .background('blue')
-        .foreground('white')
-        .write(message)
-        .pop(true)
-        .write('\n')
-        .down(1)
+    message = "#{time} wr: #{message}".blue.inverse.white
+
+    console.log message

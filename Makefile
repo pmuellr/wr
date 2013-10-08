@@ -31,25 +31,11 @@ install:
 
 #-------------------------------------------------------------------------------
 build:
-	@node_modules/.bin/coffee --bare --compile --output lib lib-src/*.coffee
+	node_modules/.bin/coffee --bare --compile --output lib lib-src/*.coffee
 
 #-------------------------------------------------------------------------------
-vendor: \
-	npm_coffee \
-	npm_charm \
-	npm_optimist
-
-#-------------------------------------------------------------------------------
-npm_coffee:
-	npm install coffee-script@1.1.3
-
-#-------------------------------------------------------------------------------
-npm_optimist:
-	npm install optimist@0.3.0
-
-#-------------------------------------------------------------------------------
-npm_charm:
-	npm install charm@0.0.5
+vendor:
+	npm install
 
 #-------------------------------------------------------------------------------
 help:

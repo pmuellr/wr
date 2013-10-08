@@ -37,6 +37,9 @@ module.exports = class FileSet
 
         @executor = Executor.getExecutor(@, @opts)
 
+        @childProcess   = null
+        @childStartTime = 0
+
     #---------------------------------------------------------------------------
     getMtime: (fileName) ->
         @allMtimes[fileName] || 0
@@ -87,7 +90,15 @@ module.exports = class FileSet
     runCommand:  ->
         @opts.logInfo "running '#{@cmd}'"
 
-        @executor.run(@cmd)
+        if @childProcess
+            if Date.now() - @childStartTime > 5000
+                @childProcess.kill()
+
+        @childStartTime = Date.now()
+        @childProcess   = @executor.run(@cmd)
+
+        @childProcess.on "exit", =>
+            @childProcess = null
 
     #---------------------------------------------------------------------------
     expandFiles: ->
