@@ -134,6 +134,10 @@ script to node.
 
 **2012-05-03: version 1.2.0**
 
+* [commit d684efb7](https://github.com/pmuellr/wr/commit/d684efb7182bd866c875be2bb459a692a5661599) - replaced charm w/colors
+
+**2012-05-03: version 1.2.0**
+
 * [issue 8](https://github.com/pmuellr/wr/issues/8) - add elapsed time to success and failure messages
 * fixed bug where wr fired off it's command when the access time changed on a file
 
