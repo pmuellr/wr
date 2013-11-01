@@ -111,11 +111,11 @@ class ExecutorSpawn extends Executor
 
     #---------------------------------------------------------------------------
     stdout: (data) ->
-        process.stdout.write stdout
+        process.stdout.write data
 
     #---------------------------------------------------------------------------
     stderr: (data) ->
-        process.stderr.write stderr.red
+        process.stderr.write data.red
 
     #---------------------------------------------------------------------------
     exit: (code, sig) ->

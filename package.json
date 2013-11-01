@@ -2,7 +2,7 @@
     "name":              "wr",
     "description":       "watch files and run a command when they change",
     "author":            "Patrick Mueller",
-    "version":           "1.3.0",
+    "version":           "1.3.1",
     "tags":              [ "command", "watch" ],
     
     "licenses": [ 
