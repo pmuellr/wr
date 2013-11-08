@@ -76,8 +76,8 @@ class ExecutorExec extends Executor
 
     #---------------------------------------------------------------------------
     done: (error, stdout, stderr) ->
-        process.stdout.write stdout
-        process.stderr.write stderr.red
+        process.stdout.write @opts.colors.stdout stdout
+        process.stderr.write @opts.colors.stderr stderr
 
         secs = @timerElapsed()
 
@@ -111,11 +111,11 @@ class ExecutorSpawn extends Executor
 
     #---------------------------------------------------------------------------
     stdout: (data) ->
-        process.stdout.write data
+        process.stdout.write @opts.colors.stdout data
 
     #---------------------------------------------------------------------------
     stderr: (data) ->
-        process.stderr.write data.red
+        process.stderr.write @opts.colors.stderr data
 
     #---------------------------------------------------------------------------
     exit: (code, sig) ->

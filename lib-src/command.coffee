@@ -17,11 +17,14 @@
 fs       = require 'fs'
 path     = require 'path'
 
+colors   = require 'colors'
 optimist = require 'optimist'
 
 wr       = require './wr'
 
 existsSync = fs.existsSync || path.existsSync
+
+Colors = null
 
 #-------------------------------------------------------------------------------
 exports.run = ->
@@ -55,6 +58,26 @@ exports.run = ->
         .boolean( 'V')
         .describe('V', 'print the version')
 
+        .string(  'color-stdout')
+        .default( 'color-stdout',  '')
+        .describe('color-stdout',  'color of stdout')
+
+        .string(  'color-stderr')
+        .default( 'color-stderr',  'red')
+        .describe('color-stderr',  'color of stderr')
+
+        .string(  'color-info')
+        .default( 'color-info',    'blue.inverse.white')
+        .describe('color-info',    'color of info messages')
+
+        .string(  'color-success')
+        .default( 'color-success', 'green.inverse.white')
+        .describe('color-success', 'color of success messages')
+
+        .string(  'color-error')
+        .default( 'color-error',   'red.inverse.white')
+        .describe('color-error',   'color of error messages')
+
         .boolean( '?')
         .describe('?', 'print help')
 
@@ -74,6 +97,7 @@ exports.run = ->
         if typeof argv.poll != 'number'
             console.error "the poll option value is not a number"
             process.exit 1
+
 
     printHelp() if argv["?"] or argv.h
 
@@ -103,6 +127,16 @@ exports.run = ->
     opts.exec        = argv.exec
     opts.poll        = argv.poll
 
+    Colors = opts.colors =
+        stdout:  argv['color-stdout']
+        stderr:  argv['color-stderr']
+        info:    argv['color-info']
+        success: argv['color-success']
+        error:   argv['color-error']
+
+    for type, color of opts.colors
+        opts.colors[type] = colorizer color
+
     opts.logError    = logError
     opts.logSuccess  = logSuccess
     opts.logInfo     = logInfo
@@ -117,6 +151,24 @@ exports.run = ->
     ###
 
     wr.run cmd, files, opts
+
+#-------------------------------------------------------------------------------
+colorizer = (colorNames) ->
+    colorNames = colorNames.split "."
+
+    for colorName in colorNames
+        continue if colorName is ""
+
+        if typeof colors[colorName] isnt "function"
+            console.log "invalid color: #{colorName}"
+            process.exit 1
+
+    return (string) ->
+        for colorName in colorNames
+            continue if colorName is ""
+            string = colors[colorName].call(colors, string)
+
+        return string
 
 #-------------------------------------------------------------------------------
 printHelp = () ->
@@ -163,7 +215,7 @@ getVersion = () ->
 logError = (message) ->
     date    = new Date()
     time    = date.toLocaleTimeString()
-    message = "#{time} wr: #{message}".red.inverse.white
+    message = Colors.error "#{time} wr: #{message}"
 
     console.log message
 
@@ -171,7 +223,7 @@ logError = (message) ->
 logSuccess = (message) ->
     date    = new Date()
     time    = date.toLocaleTimeString()
-    message = "#{time} wr: #{message}".green.inverse.white
+    message = Colors.success "#{time} wr: #{message}"
 
     console.log message
 
@@ -179,6 +231,6 @@ logSuccess = (message) ->
 logInfo = (message) ->
     date    = new Date()
     time    = date.toLocaleTimeString()
-    message = "#{time} wr: #{message}".blue.inverse.white
+    message = Colors.info "#{time} wr: #{message}"
 
     console.log message

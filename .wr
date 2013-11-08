@@ -10,6 +10,16 @@
 --chime 1
 
 #-----------------------------------------------------
+# set some funky colors
+#-----------------------------------------------------
+
+--color-stdout   blue.bold
+--color-stderr   red.bold
+--color-info     yellow.inverse.white
+--color-success  cyan.inverse.white
+--color-error    magenta.inverse.white
+
+#-----------------------------------------------------
 # command to run
 #-----------------------------------------------------
 
@@ -21,7 +31,7 @@ make
 
 bin
 lib-src
-test
+expected-missing-thing-to-generate-error-message
 package.json
 Makefile
 .wr
